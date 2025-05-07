@@ -198,8 +198,15 @@ def transporation_simplex(matrix, supply, demand):
         print(" ".join(f"{val:3}" for val in row))
 
 
+    cost = 0
+    for i in range(len(bfs)):
+        for j in range(len(bfs[i])):
+            cost += bfs[i][j] * matrix[i][j]
+    print("initial cost:", cost)
 
+    iteration_count = 0
     while(True):
+        iteration_count += 1
         # find all u and v, assuming one is 0 
         u_sol,v_sol = calculate_uv(matrix, basis_tracker)
         print("u vector: ", u_sol), print("v vector: ", v_sol)
@@ -228,7 +235,9 @@ def transporation_simplex(matrix, supply, demand):
         # check for optimality
         if largest <= 0:
             print("we are done")
-            break
+            print("Number of iterations:", iteration_count-1)
+            return bfs
+            # break
             
         # build a loop
         enter_i,enter_j = entering
@@ -286,6 +295,26 @@ def transporation_simplex(matrix, supply, demand):
         print("\nnext iteration:")
     
 
+def visualize(matrix):
+    import pydot
+    graph = pydot.Dot(graph_type="digraph", rankdir="LR")
+
+    # Add nodes
+    for i in range(10):
+        label = f"S{i}" if i < 5 else f"D{i}"
+        color = "lightblue" if i < 5 else "lightgreen"
+        graph.add_node(pydot.Node(label, style="filled", fillcolor=color))
+
+    # Add edges for flow
+    for i in range(10):
+        for j in range(10):
+            qty = matrix[i][j]
+            if qty > 0:
+                src = f"S{i}" if i < 5 else f"D{i}"
+                dst = f"S{j}" if j < 5 else f"D{j}"
+                graph.add_edge(pydot.Edge(src, dst, label=str(qty)))
+
+    graph.write_png("transport_flow.png")
 
 
 
@@ -311,7 +340,8 @@ if __name__ == "__main__":
         [3, 2, 2, 6, 2, 1, 2, 3, 4, 0]
     ]
 
-    transporation_simplex(matrix, supply, demand)
+    solution = transporation_simplex(matrix, supply, demand)
+    visualize(solution)
 
 
 
