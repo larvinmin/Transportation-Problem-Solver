@@ -179,14 +179,14 @@ def transporation_simplex(matrix, supply, demand):
     print("demand", extended_demand)
 
     # use min cost to create basic feasible solution
-    # bfs = min_cost_method(matrix, extended_supply, extended_demand)
-    # basis_tracker = [[0 for _ in range(len(matrix))] for _ in range(len(matrix[0]))]
-    # for i in range(len(bfs)):
-    #     for j in range(len(bfs[i])):
-    #         if bfs[i][j] != 0: 
-    #             basis_tracker[i][j] = 1
+    bfs = min_cost_method(matrix, extended_supply, extended_demand)
+    basis_tracker = [[0 for _ in range(len(matrix))] for _ in range(len(matrix[0]))]
+    for i in range(len(bfs)):
+        for j in range(len(bfs[i])):
+            if bfs[i][j] != 0: 
+                basis_tracker[i][j] = 1
 
-    bfs,basis_tracker = northwest_corner_method(extended_supply, extended_demand)
+    # bfs,basis_tracker = northwest_corner_method(extended_supply, extended_demand)
 
     for row in bfs:
         print(" ".join(f"{val:3}" for val in row))
@@ -324,6 +324,7 @@ def visualize(matrix):
 
 
 if __name__ == "__main__":
+    import time
     supply = [10, 12, 5, 15, 8]
     demand = [8, 11, 13, 10, 8]
 
@@ -339,8 +340,12 @@ if __name__ == "__main__":
         [4, 3, 1, 3, 4, 2, 3, 4, 0, 4],
         [3, 2, 2, 6, 2, 1, 2, 3, 4, 0]
     ]
-
+    start = time.time()
     solution = transporation_simplex(matrix, supply, demand)
+    end = time.time()
+    length = end - start
+    print(length)
+
     visualize(solution)
 
 
